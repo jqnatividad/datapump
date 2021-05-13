@@ -88,21 +88,35 @@ For example:
 
 ```
 {
-  "InputFile": "./samples/zone1_airquality_*.csv",
-  "TargetOrg": "etl-test",
-  "TargetPackage": "iot-test",
-  "TargetResource": "air-quality",
-  "PrimaryKey": "DateTime,Sensor_id",
-  "Dedupe": "last",
-  "Truncate": false,
-    "Stats": [
-      {"Kind": "descriptive"},
-      {"Kind": "mode"},
-      {"Kind": "H",
-        "GroupBy": "Sensor_id",
-        "DropColumns": "LAT,LONG"
-      }
-    ]
+	"InputFile": "./samples/zone1_airquality_*.csv",
+	"TargetOrg": "etl-test",
+	"TargetPackage": "iot-test",
+	"TargetResource": "air-quality",
+	"PrimaryKey": "DateTime,Sensor_id",
+	"Dedupe": "last",
+	"$comment": "deduplicate rows, retaining the last duplicate value as per the primary key definition",
+	"Truncate": false,
+  "$comment": "truncate is false, DO NOT drop existing rows in the targetResource. Do an upsert",
+	"Stats": [{
+			"Kind": "descriptive"
+		},
+		{
+			"Kind": "mode"
+		},
+		{
+			"Kind": "H",
+			"$comment": "H - resample at hourly frequency",
+			"GroupBy": "Sensor_id",
+			"DropColumns": "LAT,LONG",
+      "$comment": "It doesn't make sense to resample lat, long. Drop these columns from the resampled data",
+		},
+		{
+			"Kind": "D",
+			"$comment": "D - resample at daily frequency",
+			"GroupBy": "Sensor_id",
+			"DropColumns": "LAT,LONG"
+		}
+	]
 }
 ```
 
