@@ -88,13 +88,21 @@ For example:
 
 ```
 {
-	"InputFile": "./samples/zone1_airquality_*.csv",
-	"TargetOrg": "etl-test",
-	"TargetPackage": "iot-test",
-	"TargetResource": "air-quality",
-	"PrimaryKey": "DateTime,Sensor_id",
-	"Dedupe": "last",
-	"Truncate": false
+  "InputFile": "./samples/zone1_airquality_*.csv",
+  "TargetOrg": "etl-test",
+  "TargetPackage": "iot-test",
+  "TargetResource": "air-quality",
+  "PrimaryKey": "DateTime,Sensor_id",
+  "Dedupe": "last",
+  "Truncate": false,
+    "Stats": [
+      {"Kind": "descriptive"},
+      {"Kind": "mode"},
+      {"Kind": "H",
+        "GroupBy": "Sensor_id",
+        "DropColumns": "LAT,LONG"
+      }
+    ]
 }
 ```
 
@@ -102,3 +110,27 @@ Note the `Dedupe` attribute specifies if datapump should automatically handle du
 
 It can be set to `first`, `last` or ''.
 `first` : Drop duplicates except for the first occurrence. - `last` : Drop duplicates except for the last occurrence. - '' : Do not drop duplicates.
+
+Datapump also computes statistics and resamples time-series data (e.g. converting per-minute data to hourly data).
+
+For descriptive statistics, it creates a table with the `-stat` suffix. It computes:
+ * count - count number of non-NA/null observations
+ * unique - unique values
+ * top - most common value
+ * freq - most common value's frequency
+ * mean - mean
+ * std - standard deviation
+ * min - minimum
+ * 25% - 25% percentile
+ * 50% - 50% percentile
+ * 75% - 75% percentile
+ * max - maximum
+
+It can also compute the mode (the most common value of each column) for a dataset in a separate table ending with a `-mode` suffix.
+
+Finally, it can also resample a time-series dataset using any valid Pandas resampling offset.
+
+See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects and 
+https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects valid resampling offset values.
+
+To do so, just specify the desired offset for the `Kind` attribute.
