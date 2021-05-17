@@ -125,7 +125,7 @@ Note the `Dedupe` attribute specifies if datapump should automatically handle du
 It can be set to `first`, `last` or ''.
 `first` : Drop duplicates except for the first occurrence. - `last` : Drop duplicates except for the last occurrence. - '' : Do not drop duplicates.
 
-Datapump also computes statistics and resamples time-series data (e.g. converting per-minute data to hourly data).
+Datapump can also compute descriptive statistics and resamples time-series data (e.g. converting per-minute data to hourly data).
 
 For descriptive statistics, it creates a table with the `-stat` suffix. It computes:
  * count - count number of non-NA/null observations
@@ -145,6 +145,6 @@ It can also compute the mode (the most common value of each column) for a datase
 Finally, it can also resample a time-series dataset using any valid Pandas resampling offset.
 
 See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects and 
-https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects valid resampling offset values.
+https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases valid resampling offset values.
 
 To do so, just specify the desired offset for the `Kind` attribute.
